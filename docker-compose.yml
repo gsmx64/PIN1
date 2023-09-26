@@ -9,7 +9,7 @@ services:
       - 50000:50000
     container_name: jenkins-GRUPO4
     volumes:
-      - /jenkins-data/jenkins:/var/jenkins_home
+      - ./jenkins-data/jenkins:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -19,13 +19,12 @@ services:
 
   nexus:
     image: sonatype/nexus3:3.60.0
-    command: sh -c "mkdir /nexus-data && chown -R 200 /nexus-data"
     ports:
       - 8081:8081
       - 8082:8082
     container_name: nexus-GRUPO4
     volumes:
-      - /nexus-data:/nexus-data
+      - ./nexus-data:/nexus-data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     restart: "always"
@@ -40,7 +39,7 @@ services:
     environment:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
     volumes:
-      - /registry-data:/data
+      - ./registry-data:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     networks: 
