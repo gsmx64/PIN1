@@ -19,6 +19,7 @@ services:
 
   nexus:
     image: sonatype/nexus3:3.60.0
+    command: sh -c "mkdir /nexus-data && chown -R 200 /nexus-data"
     ports:
       - 8081:8081
       - 8082:8082
