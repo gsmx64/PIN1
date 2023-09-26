@@ -254,13 +254,8 @@ Tildamos la opción "Descartar build antiguos", y dentro de este emn "Strategy" 
 Tildamos "Do not allow concurrent builds" y dentro tildamos "Abort previous builds".
 
 Vamos más abajo hasta "Pipeline", y en "Definition" seleccionamos "Pipeline script from SCM", dentro de esto, en "SCM" seleccionamos "Git", en "Repository URL" pegamos la direccion SSH de nuevo repo de PIN1 que le hicimos fork, esta direccion la obtenemos del boton verde "Clone", solapa SSH, ingresamos la direccion similar a esta: git@github.com:gsmx64/PIN1.git.
-Seleccionamos en "Credentials" la de nombre "git" (cre cvreamos previamente).
+Seleccionamos en "Credentials" la de nombre "git" (que creamos previamente).
 Más abajo verificamos que en "Script Path" esté bien escrito "Jenkinsfile", que para este repo esta bien sin especificar el path, si el archivo Jenkinsfile está en otra carpeta debería agregarse la ruta completa dentro del repositorio hasta el mismo Jenkinsfile. Aquí tambien podríamos cambiar el Jenkinsfile por el Jenkinsfile.seg
-
-En la consola del servidor del Docker Engine, cerramos la sesion de jenkins por si quedó abierta:
-```
-su -s jenkins
-```
 
 Y corremos el pipeline.
 
@@ -272,8 +267,7 @@ Hacer clone del repositorio del PIN1 al que le hicimos fork:
 git clone https://github.com/gsmx64/PIN1.git
 ```
 
-Abrimos con un editor de texto el archivo Jenkinsfile, en el mismo vemos que la línea 15 están demás esos comandos (y que no existe esa carpeta), los borramos.
-Y cambiamos en las líneas 29 y 30 donde dice: "127.0.0.1", por la ip de nuestro Docker Engine en la interfaz que se ve con el contenedor de Jenkins, quedando en mi caso: 172.17.0.1
+Abrimos con un editor de texto el archivo Jenkinsfile y el Jenkinsfile.seg, en el mismo vemos que la línea 15 están demás esos comandos "cd webapp" (y que no existe esa carpeta), los borramos.
 
 Ahora realizamos el commit al repositorio:
 ```
@@ -282,10 +276,35 @@ git commit -m "Fixed Jenkins file"
 git push
 ```
 
+Si tira error de /var/run/docker.sock , reiniciar servidor linux del Docker Engine, y luego una vez iniciado, levantar los contenedores con:
+
+```
+docker start jenkins-curso
+docker start registry
+```
+Y volver a correr el pipeline.
+
+Para el caso del Jenkinsfile.seg son los mismos pasos.
+
+## 11- Implementación de mocha
+Editar los archivos Jenkinsfile y el Jenkinsfile.seg, en la línea despues del "Building image", agregar:
+```
+stage('Mocha Tests') {
+  steps {
+    sh '''
+    npm install mocha-junit-reporter --save-dev
+    ./node_modules/mocha/bin/mocha test/index.js --reporter mocha-junit-reporter --reporter-options mochaFile=./jenkins-test-results.xml
+    '''
+  }
+```
+Y volver a correr los pipelines.
+
+
 ---------------------
 
 ## TODO (para mejora)
-* PIN - agregar moka en job jenkins
+* PIN - agregar moka en job jenkins -> Listo!
+* Documentar los pasos -> Listo!
 * se puede hacer script automatizado
 * se puede hacer documentado en video
 
