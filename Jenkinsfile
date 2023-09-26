@@ -22,6 +22,14 @@ pipeline {
         sh "docker run testapp npm test"
       }
     }
+    stage('Mocha Tests') {
+      steps {
+        sh '''
+        npm install mocha-junit-reporter --save-dev
+        npm install MOCHA_FILE=./jenkins-test-results.xml ./node_modules/.bin/mocha tests/** --reporter mocha-junit-reporter
+        '''
+      }
+    }
     stage('Deploy Image') {
       steps {
         sh '''
