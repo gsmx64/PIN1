@@ -5,44 +5,44 @@ services:
     privileged: true
     user: root
     ports:
-      - 8080:8080
-      - 50000:50000
-    container_name: jenkins-GRUPO4
+      - "8080:8080"
+      - "50000:50000"
+    container_name: jenkins-G4
     volumes:
-      - ./jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - "jenkins-data:/var/jenkins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
     restart: "always"
     networks: 
-      - network-pin1
+      - network-pin1-g4
 
   nexus:
     image: sonatype/nexus3:3.60.0
     ports:
-      - 8081:8081
-      - 8082:8082
-    container_name: nexus-GRUPO4
+      - "8081:8081"
+      - "8082:8082"
+    container_name: nexus-G4
     volumes:
-      - ./nexus-data:/nexus-data
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - "nexus-data:/opt/sonatype/sonatype-work/nexus3/db"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
     restart: "always"
     networks: 
-      - network-pin1
+      - network-pin1-g4
 
   registry:
     image: registry:2.8.2
-    container_name: registry-GRUPO4
+    container_name: registry-G4
     ports:
     - "5000:5000"
     environment:
       REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
     volumes:
-      - ./registry-data:/data
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      - "registry-data:/data"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/timezone:/etc/timezone:ro"
     networks: 
-      - network-pin1
+      - network-pin1-g4
 networks:
-  network-pin1:
+  network-pin1-g4:
