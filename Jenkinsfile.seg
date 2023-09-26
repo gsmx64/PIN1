@@ -17,6 +17,27 @@ pipeline {
         '''  
       }
     }
+    stages {
+        stage ('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: ''' 
+                    -o "./" 
+                    -s "./"
+                    -f "ALL" 
+                    --prettyPrint''', odcInstallation: 'OWASP-DC'
+
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            }
+        }     
+    }
+    stage('Mocha Tests') {
+      steps {
+        sh '''  
+        npm install mocha-junit-reporter --save-dev
+        npm install MOCHA_FILE=./jenkins-test-results.xml ./node_modules/.bin/mocha tests/** --reporter mocha-junit-reporter
+        '''
+      }
+    }
     stage('Run tests') {
       steps {
         sh "docker run testapp npm test"
@@ -29,15 +50,7 @@ pipeline {
         docker push 127.0.0.1:5000/mguazzardo/testapp   
         '''
       }
-    }
-    stage('Mocha Tests') {
-      steps {
-        sh '''  
-        npm install mocha-junit-reporter --save-dev
-        npm install MOCHA_FILE=./jenkins-test-results.xml ./node_modules/.bin/mocha tests/** --reporter mocha-junit-reporter
-        '''
-      }
-    }
+    }    
     stage('Vulnerability Scan - Docker ') {
       steps {
         sh "docker run  -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --severity=CRITICAL 127.0.0.1:5000/mguazzardo/testapp"
