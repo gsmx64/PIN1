@@ -49,6 +49,7 @@ apt install openjdk-17-jdk openjdk-17-jre
 
 ## 4- Lanzar contenedor de Jenkins custom
 
+Ejecutamos:
 ```
 docker run -dit -p 8080:8080 --network=bridge -v /var/run/docker.sock:/var/run/docker.sock --name jenkins-curso docker.io/mguazzardo/pipe-seg
 ```
@@ -59,7 +60,20 @@ docker inspect jenkins-curso
 ```
 
 
-## 5- Credenciales Agente Jenkins en Docker
+## 5- Lanzar contenedor de Docker Registry propio
+
+Ejecutamos:
+```
+docker run -d -p 5000:5000 --restart always --name registry registry:2
+```
+
+Corremos lo siguiente para saber la ip del contenedor y el gateway
+```
+docker inspect registry
+```
+
+
+## 6- Credenciales Agente Jenkins en Docker
 
 Ir a la consola donde tenemos docker.
 Ejecutar lo siguiente:
@@ -74,7 +88,7 @@ chown jenkins /home/jenkins
 exit
 ```
 
-### Agregamos nuestro usuario y el de jenkins al grupo de docker:
+Agregamos nuestro usuario y el de jenkins al grupo de docker:
 ```
 usermod -aG docker $USER
 usermod -aG docker jenkins
@@ -137,7 +151,7 @@ En "Username" escribimos el usuario "jenkins"
 En "Private Key" pegamos la key "PRIVADA" que obtuvimos anteriormente (la que creamos para conectar el agente docker al Jenkins)
 
 
-## 6- Credenciales Git en Servidor de Docker
+## 7- Credenciales Git en Servidor de Docker
 
 Si estábamos en la consola del contenedor de Jenkins, salimos con exit 2 veces, asi nos quedamos en la consola del servidor que corre Docker Engine.
 Basicamente vamos a repetir los pasos de la key pero crearemos una RSA.
@@ -216,7 +230,7 @@ Hacemos click en el boton "Add deploy key", y en "Title" ponemos "github_agentdo
 Repetimos los pasos, hacemos click en el boton "Add deploy key", y en "Title" ponemos "github_jenkinscontainer_pin1" y en "Key" ponemos la key RSA "PUBLICA" (del contenedor de Jenkins), le damos click a "Add key".
 
 
-## 7- Jenkins: Configurar Agente Jenkins al Docker Engine, conexion y credenciales con Github 
+## 8- Jenkins: Configurar Agente Jenkins al Docker Engine, conexion y credenciales con Github 
 
 Ir a Administrar Jenkins -> Administrar Nodos -> Nuevo nodo
 Ponerle nombre "Docker Engine Agent" y tildar la opción "Permanent Agent", darle click al botón "Create"
@@ -232,7 +246,7 @@ Y darle click en "Guardar".
 Tambien debemos modificar el nodo "principal", y le cambiamos dentro el "Número de ejecutores" a "0" (cero), para utilizar únicamente el agente del servidor del Docker Engine.
 
 
-## 8- Jenkins: Crear el pipeline
+## 9- Jenkins: Crear el pipeline
 
 Dentro del Jenkins, hacemos click en "+ Nuevo Tarea", ponemos nombre por ejemplo pin1, seleccionamos "Pipeline", y le damos click en "OK".
 Ahora podemos poner una descripción. 
@@ -251,7 +265,7 @@ su -s jenkins
 Y corremos el pipeline.
 
 
-## 9- Luego de correr el pipeline y que nos tire error...
+## 10- Luego de correr el pipeline y que nos tire error...
 Hacer clone del repositorio del PIN1 al que le hicimos fork:
 
 ```
@@ -270,7 +284,7 @@ git push
 
 ---------------------
 
-## VER para mejora
+## TODO (para mejora)
 * PIN - agregar moka en job jenkins
 * se puede hacer script automatizado
 * se puede hacer documentado en video
