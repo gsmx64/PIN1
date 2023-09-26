@@ -20,6 +20,7 @@ pipeline {
     stage('Mocha Tests') {
       steps {
         sh '''  
+        npm install mocha-junit-reporter --save-dev
         ./node_modules/mocha/bin/mocha test/index.js --reporter mocha-junit-reporter --reporter-options mochaFile=./jenkins-test-results.xml
         '''
       }

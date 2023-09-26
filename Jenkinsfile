@@ -21,7 +21,7 @@ pipeline {
       steps {
         sh '''
         npm install mocha-junit-reporter --save-dev
-        mocha test/** --reporter mocha-junit-reporter --reporter-options mochaFile=./jenkins-test-results.xml
+        ./node_modules/mocha/bin/mocha test/index.js --reporter mocha-junit-reporter --reporter-options mochaFile=./jenkins-test-results.xml
         '''
       }
     }
