@@ -7,7 +7,7 @@ mkdir registry-data/
 
 docker compose up
 
-docker stop jenkins-GRUPO4
-docker stop nexus-GRUPO4
-docker stop registry-GRUPO4
+docker stop jenkins-G4
+docker stop nexus-G4
+docker stop registry-G4
 
